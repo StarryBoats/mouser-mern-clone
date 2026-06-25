@@ -12,25 +12,18 @@ import './index.css';
 
 function App() {
   const location = useLocation();
-  const [loading, setLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <Provider store={store}>
-      <div className="min-h-screen flex flex-col overflow-x-hidden">
+      <div className="min-h-screen flex flex-col overflow-x-hidden bg-slate-50">
         <Header />
-        <main className="flex-grow relative pt-16">
+        <main className="flex-grow relative pt-20">
           <AnimatePresence mode="wait">
             <AppRoutes key={location.pathname} />
           </AnimatePresence>
         </main>
         <Footer />
         <LiveChat />
-        {loading && <LoadingScreen />}
       </div>
     </Provider>
   );

@@ -73,191 +73,135 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="animate-spin h-12 w-12 rounded-full border-4 border-blue-600 border-t-transparent"></div>
       </div>
     );
   }
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-4 md:py-8"
+      className="min-h-screen bg-slate-50 py-6 md:py-10"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
       <div className="container mx-auto px-4">
         <BackButton />
-        {/* Header */}
-        <motion.div className="mb-6 md:mb-8" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Welcome back! Here's your platform overview.</p>
-        </motion.div>
+        <div className="mb-8 rounded-3xl bg-white p-6 shadow-sm">
+          <h1 className="text-3xl font-semibold text-slate-900">Admin Dashboard</h1>
+          <p className="mt-2 text-slate-600">A clean overview of your products, sellers, and store performance.</p>
+        </div>
 
-        {/* Main Stats */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           <StatCard
             icon={Package}
             title="Total Products"
             value={Array.isArray(products) ? products.length : 0}
-            color="from-blue-500 to-blue-600"
-          />
-          <StatCard
-            icon={Package}
-            title="Pending Review"
-            value={Array.isArray(products) ? products.filter(p=>p.reviewStatus==='pending').length : 0}
-            color="from-yellow-500 to-yellow-600"
+            color="from-sky-500 to-blue-600"
           />
           <StatCard
             icon={Users}
             title="Seller Applications"
             value={Array.isArray(sellerApplications) ? sellerApplications.length : 0}
-            color="from-purple-500 to-purple-600"
+            color="from-violet-500 to-fuchsia-600"
           />
           <StatCard
             icon={ShoppingCart}
             title="Sponsors"
             value={Array.isArray(sponsors) ? sponsors.length : 0}
-            color="from-green-500 to-green-600"
+            color="from-emerald-500 to-teal-600"
           />
           <StatCard
             icon={TrendingUp}
-            title="Recent Orders"
+            title="Open Orders"
             value={Array.isArray(cart) ? cart.length : 0}
-            color="from-orange-500 to-orange-600"
+            color="from-orange-500 to-amber-600"
           />
           <StatCard
             icon={Layers}
             title="Categories"
             value={Array.isArray(categories) ? categories.length : 0}
-            color="from-cyan-500 to-cyan-600"
+            color="from-cyan-500 to-sky-600"
           />
-        </motion.div>
+          <StatCard
+            icon={BarChart2}
+            title="Pending Reviews"
+            value={Array.isArray(products) ? products.filter((p) => p.reviewStatus === 'pending').length : 0}
+            color="from-rose-500 to-pink-600"
+          />
+        </div>
 
-        {/* Action Cards */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible">
-        
-          {/* Broadcast Notification Card - Special/Featured */}
-          <motion.button
-            variants={itemVariants}
-            onClick={async () => {
-              const title = window.prompt('Notification title (optional):');
-              const message = window.prompt('Notification message:');
-              const image = window.prompt('Image URL (optional):');
-              if (!message) return alert('Message required');
-              try {
-                await api.post('/admin/notify-all', { title, message, image });
-                alert('📢 Notifications sent to all users!');
-              } catch (err) {
-                console.error('Notify all failed:', err);
-                alert('Failed to send notifications');
-              }
-            }}
-            className="bg-gradient-to-br from-red-50 via-pink-50 to-red-50 rounded-2xl shadow-lg p-6 hover:shadow-2xl transition text-left group border-2 border-red-100 hover:border-red-300 relative overflow-hidden"
-            whileHover={{ scale: 1.05, y: -5 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <motion.div 
-              className="absolute top-0 right-0 text-6xl opacity-20 group-hover:opacity-30 transition"
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity }}
-            >
-              📢
-            </motion.div>
-            <motion.div 
-              className="flex items-start justify-between mb-4 relative z-10"
-              animate={{ y: [0, -2, 0] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            >
-              <div>
-                <h3 className="text-xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">Broadcast Message</h3>
-                <p className="text-xs text-red-600 font-semibold mt-1 uppercase tracking-wide">Send to All Users</p>
-              </div>
-              <motion.div
-                className="text-white bg-gradient-to-br from-red-500 to-pink-600 p-3 rounded-xl group-hover:scale-110 transition shadow-lg"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
+        <div className="mt-10 grid gap-6 lg:grid-cols-3">
+          <div className="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
+            <h2 className="text-xl font-semibold text-slate-900">Quick Actions</h2>
+            <p className="mt-2 text-sm text-slate-600">Jump directly to the key admin sections.</p>
+            <div className="mt-6 space-y-3">
+              <button
+                type="button"
+                onClick={() => navigate('/admin/products')}
+                className="w-full rounded-2xl bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 transition"
               >
-                <TrendingUp size={24} />
-              </motion.div>
-            </motion.div>
-            <motion.div 
-              className="mb-4 p-3 bg-white rounded-lg border border-red-200 relative z-10"
-              whileHover={{ backgroundColor: '#fff5f5' }}
-            >
-              <p className="text-2xl font-bold text-red-600">🔥 Alert</p>
-              <p className="text-xs text-gray-500 mt-1">Send instant notifications</p>
-            </motion.div>
-            <motion.span 
-              className="bg-gradient-to-r from-red-600 to-pink-600 text-white font-bold px-3 py-1 rounded-full text-sm inline-flex items-center gap-1 relative z-10"
-              whileHover={{ width: 'auto' }}
-            >
-              📣 Send Now →
-            </motion.span>
-          </motion.button>
-        
-          {/* Seller Applications Card */}
-          <motion.button
-            variants={itemVariants}
-            onClick={() => navigate('/admin/seller-applications')}
-            className="bg-gradient-to-br from-purple-50 via-purple-50 to-pink-50 rounded-2xl shadow-lg p-6 hover:shadow-2xl transition text-left group border-2 border-purple-100 hover:border-purple-300"
-            whileHover={{ scale: 1.05, y: -5 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <motion.div 
-              className="flex items-start justify-between mb-4"
-              animate={{ y: [0, -2, 0] }}
-              transition={{ duration: 3, repeat: Infinity, delay: 0.1 }}
-            >
-              <div>
-                <h3 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Seller Applications</h3>
-                <p className="text-xs text-purple-600 font-semibold mt-1 uppercase tracking-wide">Pending Review</p>
-              </div>
-              <motion.div
-                className="text-white bg-gradient-to-br from-purple-500 to-pink-600 p-3 rounded-xl group-hover:scale-110 transition shadow-lg"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 4, repeat: Infinity, delay: 0.1 }}
+                Manage Products
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/admin/seller-applications')}
+                className="w-full rounded-2xl bg-violet-600 px-4 py-3 text-white hover:bg-violet-700 transition"
               >
-                <Users size={24} />
-              </motion.div>
-            </motion.div>
-            <motion.div 
-              className="mb-4 p-3 bg-white rounded-lg border border-purple-200"
-              whileHover={{ backgroundColor: '#faf5ff' }}
-            >
-              <p className="text-3xl font-bold text-purple-600">{Array.isArray(sellerApplications) ? sellerApplications.length : 0}</p>
-              <p className="text-xs text-gray-500 mt-1">Awaiting approval</p>
-            </motion.div>
-            <motion.span 
-              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold px-3 py-1 rounded-full text-sm inline-flex items-center gap-1"
-              whileHover={{ width: 'auto' }}
-            >
-              👥 Review Now →
-            </motion.span>
-          </motion.button>
+                Review Sellers
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/admin/home-settings')}
+                className="w-full rounded-2xl bg-slate-800 px-4 py-3 text-white hover:bg-slate-900 transition"
+              >
+                Home Page Settings
+              </button>
+            </div>
+          </div>
 
-          {/* Product Review Card */}
-          <motion.button
-            variants={itemVariants}
-            onClick={() => navigate('/admin/products')}
-            className="bg-gradient-to-br from-yellow-50 via-orange-50 to-yellow-50 rounded-2xl shadow-lg p-6 hover:shadow-2xl transition text-left group border-2 border-yellow-100 hover:border-yellow-300"
-            whileHover={{ scale: 1.05, y: -5 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <motion.div 
-              className="flex items-start justify-between mb-4"
-              animate={{ y: [0, -2, 0] }}
-              transition={{ duration: 3, repeat: Infinity, delay: 0.1 }}
-            >
+          <div className="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
+            <div className="flex items-center justify-between">
               <div>
+                <p className="text-sm uppercase tracking-[0.2em] text-slate-400">Store Health</p>
+                <h3 className="mt-2 text-2xl font-semibold text-slate-900">Healthy</h3>
+              </div>
+              <div className="rounded-2xl bg-blue-50 px-4 py-3 text-blue-700">Live</div>
+            </div>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm text-slate-500">Products</p>
+                <p className="mt-2 text-xl font-semibold text-slate-900">{Array.isArray(products) ? products.length : 0}</p>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm text-slate-500">Seller Requests</p>
+                <p className="mt-2 text-xl font-semibold text-slate-900">{Array.isArray(sellerApplications) ? sellerApplications.length : 0}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
+            <h2 className="text-xl font-semibold text-slate-900">Traffic Snapshot</h2>
+            <p className="mt-2 text-sm text-slate-600">A quick look at recent activity.</p>
+            <div className="mt-6 space-y-4">
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm text-slate-500">Active carts</p>
+                <p className="mt-2 text-2xl font-semibold text-slate-900">{Array.isArray(cart) ? cart.length : 0}</p>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm text-slate-500">Sponsors</p>
+                <p className="mt-2 text-2xl font-semibold text-slate-900">{Array.isArray(sponsors) ? sponsors.length : 0}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+export default AdminDashboard;
+
                 <h3 className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">Product Review</h3>
                 <p className="text-xs text-yellow-600 font-semibold mt-1 uppercase tracking-wide">Approval Queue</p>
               </div>
