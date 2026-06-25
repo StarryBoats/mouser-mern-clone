@@ -202,62 +202,6 @@ const AdminDashboard = () => {
 
 export default AdminDashboard;
 
-                <h3 className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">Product Review</h3>
-                <p className="text-xs text-yellow-600 font-semibold mt-1 uppercase tracking-wide">Approval Queue</p>
-              </div>
-              <motion.div
-                className="text-white bg-gradient-to-br from-yellow-500 to-orange-600 p-3 rounded-xl group-hover:scale-110 transition shadow-lg"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 4, repeat: Infinity, delay: 0.1 }}
-              >
-                <Package size={24} />
-              </motion.div>
-            </motion.div>
-            <motion.div 
-              className="mb-4 p-3 bg-white rounded-lg border border-yellow-200"
-              whileHover={{ backgroundColor: '#fffbf0' }}
-            >
-              <p className="text-3xl font-bold text-yellow-600">{Array.isArray(products) ? products.filter(p=>p.reviewStatus==='pending').length : 0}</p>
-              <p className="text-xs text-gray-500 mt-1">Pending approval</p>
-            </motion.div>
-            <motion.span 
-              className="bg-gradient-to-r from-yellow-600 to-orange-600 text-white font-bold px-3 py-1 rounded-full text-sm inline-flex items-center gap-1"
-              whileHover={{ width: 'auto' }}
-            >
-              📦 Review Now →
-            </motion.span>
-          </motion.button>
-
-          {/* Product Management Card */}
-          <motion.button
-            variants={itemVariants}
-            onClick={() => navigate('/admin/products')}
-            className="bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-50 rounded-2xl shadow-lg p-6 hover:shadow-2xl transition text-left group border-2 border-blue-100 hover:border-blue-300"
-            whileHover={{ scale: 1.05, y: -5 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <motion.div 
-              className="flex items-start justify-between mb-4"
-              animate={{ y: [0, -2, 0] }}
-              transition={{ duration: 3, repeat: Infinity, delay: 0.2 }}
-            >
-              <div>
-                <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Product Management</h3>
-                <p className="text-xs text-blue-600 font-semibold mt-1 uppercase tracking-wide">All Products</p>
-              </div>
-              <motion.div
-                className="text-white bg-gradient-to-br from-blue-500 to-cyan-600 p-3 rounded-xl group-hover:scale-110 transition shadow-lg"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 4, repeat: Infinity, delay: 0.2 }}
-              >
-                <Package size={24} />
-              </motion.div>
-            </motion.div>
-            <motion.div 
-              className="mb-4 p-3 bg-white rounded-lg border border-blue-200"
-              whileHover={{ backgroundColor: '#f0f9ff' }}
-            >
-              <p className="text-3xl font-bold text-blue-600">{Array.isArray(products) ? products.length : 0}</p>
               <p className="text-xs text-gray-500 mt-1">Total in catalog</p>
             </motion.div>
             <motion.span 
