@@ -110,357 +110,431 @@ const Header = () => {
     visible: {
       opacity: 1,
       x: 0,
-      transition: { duration: 0.3, ease: 'easeOut' },
+      transition: { duration: 0.4, ease: 'easeOut' },
     },
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
-      <div className="container mx-auto flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-        <div className="flex items-center gap-3">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="h-11 w-11 rounded-xl bg-blue-600 text-white grid place-items-center font-semibold text-lg">
-              M
-            </div>
-            <div className="hidden sm:block">
-              <p className="text-lg font-semibold text-slate-900">Mouser</p>
-              <p className="text-xs text-slate-500">Electronics marketplace</p>
-            </div>
-          </Link>
-        </div>
-
-        <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-2xl items-center gap-2">
-          <input
-            type="text"
-            placeholder="Search products, categories, brands..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 focus:border-blue-500 focus:outline-none"
-          />
-          <button
-            type="submit"
-            className="rounded-xl bg-blue-600 px-4 py-3 text-white font-semibold hover:bg-blue-700 transition"
-          >
-            Search
-          </button>
-        </form>
-
-        <div className="hidden md:flex items-center gap-4">
-          <Link to="/" className="text-sm font-medium text-slate-700 hover:text-blue-600 transition">
-            Home
-          </Link>
-          <Link to="/products" className="text-sm font-medium text-slate-700 hover:text-blue-600 transition">
-            Products
-          </Link>
-          <div ref={categoriesRef} className="relative">
-            <button
-              type="button"
-              onClick={() => setShowCategories((value) => !value)}
-              className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-300 hover:text-blue-600 transition"
-            >
-              Categories <ChevronDown size={16} />
-            </button>
-            <AnimatePresence>
-              {showCategories && (
-                <motion.div
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  className="absolute left-0 top-full z-40 mt-2 min-w-[220px] rounded-2xl border border-slate-200 bg-white p-2 shadow-lg"
-                >
-                  {categories.length > 0 ? (
-                    categories.map((cat) => (
-                      <Link
-                        key={cat.slug || cat._id}
-                        to={`/category/${cat.slug}`}
-                        className="block rounded-xl px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
-                        onClick={() => setShowCategories(false)}
-                      >
-                        {cat.name}
-                      </Link>
-                    ))
-                  ) : (
-                    <p className="px-4 py-3 text-sm text-slate-500">No categories available</p>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-          <Link to="/cart" className="relative inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-300 hover:text-blue-600 transition">
-            <ShoppingCart size={18} />
-            Cart
-            {cart.length > 0 && (
-              <span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">
-                {cart.length}
-              </span>
-            )}
-          </Link>
-        </div>
-
-        <div className="hidden md:flex items-center gap-3">
-          <NotificationBell />
-          {user ? (
-            <div ref={userMenuRef} className="relative">
-              <button
-                type="button"
-                onClick={() => setShowUserMenu((value) => !value)}
-                className="inline-flex items-center justify-center rounded-full bg-slate-100 p-3 text-slate-700 hover:bg-slate-200 transition"
+    <motion.header
+      className="fixed w-full top-0 z-50 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 shadow-lg"
+      initial={{ opacity: 0, y: -60 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+    >
+      <div className="container mx-auto px-4 py-4">
+        <motion.div
+          className="flex justify-between items-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Logo & Branding */}
+              <motion.div variants={itemVariants}>
+            <Link to="/" className="flex items-center gap-2 text-white group">
+              <motion.div
+                className="w-9 h-9 bg-white rounded-lg flex items-center justify-center group-hover:scale-105"
+                whileHover={{ scale: 1.05, rotate: 4 }}
+                transition={{ type: 'spring', stiffness: 300 }}
               >
-                <User size={20} />
+                <span className="text-blue-700 font-bold text-base">M</span>
+              </motion.div>
+              <span className="font-bold text-lg hidden sm:inline">Mouser</span>
+            </Link>
+          </motion.div>
+
+          {/* Desktop Navigation - Center */}
+          <motion.nav className="hidden lg:flex items-center gap-8" variants={containerVariants} initial="hidden" animate="visible">
+            <motion.div variants={itemVariants}>
+              <Link to="/" className="text-white hover:text-blue-100 font-medium transition duration-300">
+                Home
+              </Link>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <Link to="/products" className="text-white hover:text-blue-100 font-medium transition duration-300">
+                Products
+              </Link>
+            </motion.div>
+
+
+            {/* Desktop categories dropdown */}
+            <motion.div ref={categoriesRef} variants={itemVariants} className="relative">
+              <button
+                onClick={() => setShowCategories(!showCategories)}
+                className="text-white hover:text-blue-100 font-medium transition duration-300 flex items-center gap-1"
+              >
+                Categories <ChevronDown size={16} />
               </button>
               <AnimatePresence>
-                {showUserMenu && (
+                {showCategories && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 top-full mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"
+                    className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-xl py-2 w-56"
                   >
-                    <div className="space-y-1 p-3">
-                      <p className="text-sm font-semibold text-slate-900">{user.name}</p>
-                      <p className="text-xs text-slate-500">{user.email}</p>
-                    </div>
-                    <div className="border-t border-slate-200 p-2">
+                    {categories.map((cat) => (
                       <Link
-                        to={user.role === 'seller' ? `/seller/${user._id}` : '/user/profile'}
-                        className="block rounded-xl px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
-                        onClick={() => setShowUserMenu(false)}
+                        key={cat.slug}
+                        to={`/category/${cat.slug}`}
+                        className="block px-4 py-2 text-gray-700 hover:bg-blue-100 transition"
+                        onClick={() => setShowCategories(false)}
                       >
-                        Profile
+                        {cat.name}
                       </Link>
-                      {user.role === 'admin' && (
-                        <Link
-                          to="/admin/dashboard"
-                          className="block rounded-xl px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
-                          onClick={() => setShowUserMenu(false)}
-                        >
-                          Admin Dashboard
-                        </Link>
-                      )}
-                      {user.role === 'seller' && (
-                        <Link
-                          to="/seller/dashboard"
-                          className="block rounded-xl px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
-                          onClick={() => setShowUserMenu(false)}
-                        >
-                          Seller Dashboard
-                        </Link>
-                      )}
-                      {user.role && user.role !== 'seller' && user.role !== 'admin' && (
-                        <Link
-                          to="/apply"
-                          className="block rounded-xl px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
-                          onClick={() => setShowUserMenu(false)}
-                        >
-                          Apply to Sell
-                        </Link>
-                      )}
-                      <Link
-                        to="/user/settings"
-                        className="block rounded-xl px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        Settings
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleLogout();
-                          setShowUserMenu(false);
-                        }}
-                        className="mt-2 w-full rounded-xl bg-slate-100 px-4 py-2 text-left text-sm font-semibold text-red-600 hover:bg-slate-200"
-                      >
-                        Logout
-                      </button>
-                    </div>
+                    ))}
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Link
-                to="/login"
-                className="rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-300 hover:text-blue-600 transition"
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition"
-              >
-                Sign Up
-              </Link>
-            </div>
-          )}
-        </div>
+            </motion.div>
 
-        <button
-          type="button"
-          onClick={() => setMobileMenuOpen((value) => !value)}
-          className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-3 text-slate-700 md:hidden"
-        >
-          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      </div>
+            <motion.div variants={itemVariants}>
+              <Link to="/cart" className="relative text-white hover:text-blue-100 font-medium transition duration-300">
+                <motion.div className="flex items-center gap-1" whileHover={{ scale: 1.1 }}>
+                  <ShoppingCart size={20} />
+                  {cart.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                      {cart.length}
+                    </span>
+                  )}
+                </motion.div>
+              </Link>
+            </motion.div>
+          </motion.nav>
 
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="border-t border-slate-200 bg-slate-50 px-4 py-4 md:hidden"
-          >
-            <form onSubmit={handleSearch} className="flex gap-2">
+          {/* Search Bar - Desktop */}
+          <motion.form onSubmit={handleSearch} className="hidden md:flex items-center" variants={itemVariants}>
+            <div className="relative flex items-center">
               <input
                 type="text"
                 placeholder="Search products..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 focus:border-blue-500 focus:outline-none"
+                // set explicit height so the adjacent button can mirror it
+                className="px-4 py-2 h-10 rounded-l-lg focus:outline-none w-48 text-gray-700"
               />
-              <button type="submit" className="rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition">
-                Search
-              </button>
-            </form>
-            <div className="mt-4 space-y-2">
-              <Link
-                to="/"
-                className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white"
-                onClick={() => setMobileMenuOpen(false)}
+              <motion.button
+                type="submit"
+                // match the input height; h-full was unreliable inside flex container
+                className="px-3 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 transition h-10 flex items-center justify-center"
+                whileHover={{ scale: 1.05 }}
               >
-                Home
-              </Link>
-              <Link
-                to="/products"
-                className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Products
-              </Link>
-              <button
-                type="button"
-                onClick={() => setShowCategories((value) => !value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-medium text-slate-700"
-              >
-                Categories
-              </button>
-              {showCategories && (
-                <div className="mt-2 space-y-2 rounded-2xl border border-slate-200 bg-white p-2">
-                  {categories.length > 0 ? (
-                    categories.map((cat) => (
-                      <Link
-                        key={cat.slug || cat._id}
-                        to={`/category/${cat.slug}`}
-                        className="block rounded-xl px-4 py-3 text-sm text-slate-700 hover:bg-slate-50"
-                        onClick={() => {
-                          setShowCategories(false);
-                          setMobileMenuOpen(false);
-                        }}
+                <Search size={18} />
+              </motion.button>
+            </div>
+          </motion.form>
+
+          {/* User Profile */}
+          <motion.div className="flex items-center gap-2 sm:gap-3 justify-end" variants={containerVariants} initial="hidden" animate="visible">
+            <motion.div variants={itemVariants}>
+              <NotificationBell />
+            </motion.div>
+            {user ? (
+              <>
+                {/* User Profile Dropdown */}
+                <motion.div ref={userMenuRef} variants={itemVariants} className="relative">
+                  <motion.button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="p-2 text-white hover:bg-white/10 rounded-lg transition -mt-px"
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    <User size={22} />
+                  </motion.button>
+                  <AnimatePresence>
+                    {showUserMenu && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-50"
                       >
-                        {cat.name}
-                      </Link>
-                    ))
-                  ) : (
-                    <p className="px-4 py-3 text-sm text-slate-500">No categories found</p>
-                  )}
-                </div>
-              )}
-              <Link
-                to="/cart"
-                className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Cart {cart.length > 0 && `(${cart.length})`}
-              </Link>
-              <Link
-                to="/sponsors"
-                className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Sponsors
-              </Link>
-              {user ? (
-                <>
-                  <div className="rounded-xl border border-slate-200 bg-white p-4">
-                    <p className="text-sm font-semibold text-slate-900">Hello, {user.name}</p>
-                  </div>
-                  <Link
-                    to={user.role === 'seller' ? `/seller/${user._id}` : '/user/profile'}
-                    className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Profile
-                  </Link>
-                  {user.role === 'admin' && (
-                    <Link
-                      to="/admin/dashboard"
-                      className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Admin Dashboard
-                    </Link>
-                  )}
-                  {user.role === 'seller' && (
-                    <Link
-                      to="/seller/dashboard"
-                      className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Seller Dashboard
-                    </Link>
-                  )}
-                  {user.role && user.role !== 'seller' && user.role !== 'admin' && (
-                    <Link
-                      to="/apply"
-                      className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Apply to Sell
-                    </Link>
-                  )}
-                  <Link
-                    to="/user/settings"
-                    className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Settings
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleLogout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full rounded-xl bg-red-500 px-4 py-3 text-sm font-semibold text-white hover:bg-red-600 transition"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
+                        <div className="px-4 py-3 border-b border-gray-200">
+                          <p className="font-semibold text-gray-900">{user.name}</p>
+                          <p className="text-xs text-gray-600">{user.email}</p>
+                        </div>
+                        <div className="space-y-1 py-2">
+                          <Link
+                            to={user.role === 'seller' ? `/seller/${user._id}` : `/user/profile`}
+                            className="block px-4 py-2 text-gray-700 hover:bg-blue-50 transition"
+                            onClick={() => setShowUserMenu(false)}
+                          >
+                            View Profile
+                          </Link>
+                          {user.role === 'admin' && (
+                            <Link
+                              to="/admin/dashboard"
+                              className="block px-4 py-2 text-gray-700 hover:bg-blue-50 transition"
+                              onClick={() => setShowUserMenu(false)}
+                            >
+                              Admin Dashboard
+                            </Link>
+                          )}
+                          {user.role === 'seller' && (
+                            <Link
+                              to="/seller/dashboard"
+                              className="block px-4 py-2 text-gray-700 hover:bg-blue-50 transition"
+                              onClick={() => setShowUserMenu(false)}
+                            >
+                              Seller Dashboard
+                            </Link>
+                          )}
+                          {user.role && user.role !== 'seller' && user.role !== 'admin' && (
+                            <Link
+                              to="/apply"
+                              className="block px-4 py-2 text-gray-700 hover:bg-blue-50 transition"
+                              onClick={() => setShowUserMenu(false)}
+                            >
+                              Apply to Sell
+                            </Link>
+                          )}
+                          <Link
+                            to="/user/settings"
+                            className="px-4 py-2 text-gray-700 hover:bg-blue-50 transition flex items-center gap-2"
+                            onClick={() => setShowUserMenu(false)}
+                          >
+                            <Settings size={16} /> Settings
+                          </Link>
+                          <button
+                            onClick={() => {
+                              handleLogout();
+                              setShowUserMenu(false);
+                            }}
+                            className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition flex items-center gap-2 border-t border-gray-200"
+                          >
+                            <LogOut size={16} /> Logout
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              </>
+            ) : (
+              <>
+                <motion.div variants={itemVariants} className="hidden sm:block">
                   <Link
                     to="/login"
-                    className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-700 hover:bg-white"
-                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-4 py-2 text-white border-2 border-white rounded-lg font-semibold hover:bg-white hover:text-blue-700 transition duration-300 text-sm"
                   >
                     Login
                   </Link>
+                </motion.div>
+                <motion.div variants={itemVariants} className="hidden sm:block">
                   <Link
                     to="/register"
-                    className="block rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition"
-                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-4 py-2 bg-white text-blue-700 rounded-lg font-semibold hover:bg-blue-100 transition duration-300 text-sm"
                   >
                     Sign Up
                   </Link>
-                </>
-              )}
-            </div>
+                </motion.div>
+              </>
+            )}
+
+            {/* Mobile Menu Button */}
+            <motion.button
+              variants={itemVariants}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden text-white"
+              whileHover={{ scale: 1.1 }}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </motion.button>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+          </motion.div>
+
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="lg:hidden mt-4 space-y-3"
+            >
+              {/* Mobile Search */}
+              <form onSubmit={handleSearch} className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  className="flex-1 px-4 py-2 rounded-lg focus:outline-none text-gray-700"
+                />
+                <motion.button
+                  type="submit"
+                  className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Search size={18} />
+                </motion.button>
+              </form>
+
+              {/* Mobile Navigation Links */}
+              <motion.div className="space-y-2" variants={containerVariants} initial="hidden" animate="visible">
+                <motion.div variants={itemVariants}>
+                  <Link
+                    to="/"
+                    className="block px-4 py-2 text-white hover:bg-blue-500 rounded-lg transition"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Home
+                  </Link>
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                  <Link
+                    to="/products"
+                    className="block px-4 py-2 text-white hover:bg-blue-500 rounded-lg transition"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Products
+                  </Link>
+                </motion.div>
+
+
+                {/* Mobile Categories */}
+                <motion.div variants={itemVariants}>
+                  <button
+                    onClick={() => setShowCategories(!showCategories)}
+                    className="w-full text-left px-4 py-2 text-white hover:bg-blue-500 rounded-lg transition flex items-center justify-between"
+                  >
+                    Categories <ChevronDown size={16} />
+                  </button>
+                  <AnimatePresence>
+                    {showCategories && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="ml-4 mt-2 space-y-2"
+                      >
+                        {categories.map((cat) => (
+                          <Link
+                            key={cat.slug}
+                            to={`/category/${cat.slug}`}
+                            className="block px-4 py-2 text-blue-100 hover:text-white transition"
+                            onClick={() => {
+                              setMobileMenuOpen(false);
+                              setShowCategories(false);
+                            }}
+                          >
+                            → {cat.name}
+                          </Link>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                    <Link
+                      to="/cart"
+                      className="px-4 py-2 text-white hover:bg-blue-500 rounded-lg transition flex items-center gap-2"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                    <ShoppingCart size={18} />
+                    Cart {cart.length > 0 && `(${cart.length})`}
+                  </Link>
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                  <Link
+                    to="/sponsors"
+                    className="block px-4 py-2 text-white hover:bg-blue-500 rounded-lg transition"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Sponsors
+                  </Link>
+                </motion.div>
+
+                {user ? (
+                  <>
+                    <motion.div variants={itemVariants} className="border-t border-blue-500 pt-2 mt-2">
+                      <p className="px-4 py-2 text-blue-100 font-semibold">Hi, {user.name}</p>
+                    </motion.div>
+                    {user.role === 'admin' && (
+                      <motion.div variants={itemVariants}>
+                        <Link
+                          to="/admin/dashboard"
+                          className="block px-4 py-2 bg-yellow-400 text-blue-800 rounded-lg font-semibold transition"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Admin Dashboard
+                        </Link>
+                      </motion.div>
+                    )}
+                    {user.role === 'seller' && (
+                      <motion.div variants={itemVariants}>
+                        <Link
+                          to="/seller/dashboard"
+                          className="block px-4 py-2 bg-green-400 text-blue-800 rounded-lg font-semibold transition"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Seller Dashboard
+                        </Link>
+                      </motion.div>
+                    )}
+                    {user.role && user.role !== 'seller' && user.role !== 'admin' && (
+                      <motion.div variants={itemVariants}>
+                        <Link
+                          to="/apply"
+                          className="block px-4 py-2 bg-white text-blue-700 rounded-lg font-semibold transition"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Apply to Sell
+                        </Link>
+                      </motion.div>
+                    )}
+                    <motion.div variants={itemVariants}>
+                      <Link
+                        to="/user/settings"
+                        className="block px-4 py-2 text-blue-100 hover:bg-blue-500 rounded-lg transition"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Settings
+                      </Link>
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <button
+                        onClick={() => {
+                          handleLogout();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition"
+                      >
+                        Logout
+                      </button>
+                    </motion.div>
+                  </>
+                ) : (
+                  <>
+                    <motion.div variants={itemVariants}>
+                      <Link
+                        to="/login"
+                        className="block px-4 py-2 text-white hover:bg-blue-500 rounded-lg transition"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Login
+                      </Link>
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                      <Link
+                        to="/register"
+                        className="block px-4 py-2 bg-white text-blue-700 rounded-lg transition"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Sign Up
+                      </Link>
+                    </motion.div>
+                  </>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.header>
   );
 };
 
